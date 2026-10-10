@@ -1,0 +1,10 @@
+# 代码生成器配置
+generator:
+  db:
+    url: jdbc:mysql://127.0.0.1:3306/eShop?useUnicode=true&characterEncoding=utf8&serverTimezone=Asia/Shanghai
+    username: root
+    password: "${DB_PASSWORD}"
+  author: liaohongdong
+  parentPackage: org.eu.liaohongdong
+  moduleName: mpg
+  tableList: "ums_admin"

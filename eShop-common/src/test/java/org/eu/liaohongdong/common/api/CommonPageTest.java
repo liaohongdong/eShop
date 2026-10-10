@@ -1,11 +1,10 @@
 package org.eu.liaohongdong.common.api;
 
-import com.github.pagehelper.Page;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import org.junit.jupiter.api.Test;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -14,11 +13,10 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 class CommonPageTest {
 
     @Test
-    void restPage_fromPageHelperPage_mapsAllFields() {
+    void restPage_fromMybatisPlusPage_mapsAllFields() {
         Page<String> page = new Page<>(2, 10);
         page.setTotal(55);
-        page.add("a");
-        page.add("b");
+        page.setRecords(List.of("a", "b"));
 
         CommonPage<String> result = CommonPage.restPage(page);
 
@@ -30,24 +28,30 @@ class CommonPageTest {
     }
 
     @Test
-    void restPage_fromPageHelperPlainList_fallsBackToWholeListAsOnePage() {
-        List<String> list = new ArrayList<>(List.of("x", "y", "z"));
+    void restPage_fromMybatisPlusFirstPage_yieldsPageNoOne() {
+        Page<String> page = new Page<>(1, 10);
+        page.setTotal(30);
+        page.setRecords(List.of("v"));
 
-        CommonPage<String> result = CommonPage.restPage(list);
+        CommonPage<String> result = CommonPage.restPage(page);
 
         assertEquals(1, result.getPageNo());
-        assertEquals(3, result.getPageSize());
-        assertEquals(1, result.getTotalPage());
-        assertEquals(3L, result.getTotal());
-        assertEquals(List.of("x", "y", "z"), result.getList());
+        assertEquals(10, result.getPageSize());
+        assertEquals(3, result.getTotalPage());
+        assertEquals(30L, result.getTotal());
+        assertEquals(List.of("v"), result.getList());
     }
 
     @Test
-    void restPage_fromPageHelperEmptyList_yieldsZeroCounts() {
-        CommonPage<String> result = CommonPage.restPage(new ArrayList<>());
+    void restPage_fromMybatisPlusEmptyPage_yieldsZeroCounts() {
+        Page<String> page = new Page<>(1, 10);
+        page.setTotal(0);
+        page.setRecords(List.of());
+
+        CommonPage<String> result = CommonPage.restPage(page);
 
         assertEquals(1, result.getPageNo());
-        assertEquals(0, result.getPageSize());
+        assertEquals(10, result.getPageSize());
         assertEquals(0, result.getTotalPage());
         assertEquals(0L, result.getTotal());
         assertTrue(result.getList().isEmpty());
@@ -94,18 +98,18 @@ class CommonPageTest {
 
     @Test
     void restPage_bothOverloads_yieldConsistentOneBasedPageNo() {
-        Page<String> pageHelperPage = new Page<>(1, 10);
-        pageHelperPage.setTotal(30);
-        pageHelperPage.add("v");
+        Page<String> mybatisPlusPage = new Page<>(1, 10);
+        mybatisPlusPage.setTotal(30);
+        mybatisPlusPage.setRecords(List.of("v"));
         PageImpl<String> springDataPage = new PageImpl<>(List.of("v"), PageRequest.of(0, 10), 30);
 
-        CommonPage<String> fromPageHelper = CommonPage.restPage(pageHelperPage);
+        CommonPage<String> fromMybatisPlus = CommonPage.restPage(mybatisPlusPage);
         CommonPage<String> fromSpringData = CommonPage.restPage(springDataPage);
 
-        assertEquals(fromPageHelper.getPageNo(), fromSpringData.getPageNo());
-        assertEquals(fromPageHelper.getPageSize(), fromSpringData.getPageSize());
-        assertEquals(fromPageHelper.getTotalPage(), fromSpringData.getTotalPage());
-        assertEquals(fromPageHelper.getTotal(), fromSpringData.getTotal());
-        assertEquals(fromPageHelper.getList(), fromSpringData.getList());
+        assertEquals(fromMybatisPlus.getPageNo(), fromSpringData.getPageNo());
+        assertEquals(fromMybatisPlus.getPageSize(), fromSpringData.getPageSize());
+        assertEquals(fromMybatisPlus.getTotalPage(), fromSpringData.getTotalPage());
+        assertEquals(fromMybatisPlus.getTotal(), fromSpringData.getTotal());
+        assertEquals(fromMybatisPlus.getList(), fromSpringData.getList());
     }
 }

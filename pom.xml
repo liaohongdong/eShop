@@ -17,19 +17,17 @@
 	<packaging>pom</packaging>
 	<modules>
 		<module>eShop-common</module>
+		<module>eShop-mpg</module>
 	</modules>
 
 	<properties>
 		<java.version>17</java.version>
 		<skipTests>true</skipTests>
-		<pagehelper-starter.version>2.1.1</pagehelper-starter.version>
-		<pagehelper.version>6.1.1</pagehelper.version>
 		<druid.version>1.2.28</druid.version>
 		<hutool.version>5.8.40</hutool.version>
 		<springdoc-openapi.version>3.1.1</springdoc-openapi.version>
-		<mybatis-generator.version>2.0.0</mybatis-generator.version>
-		<mybatis.version>3.5.19</mybatis.version>
-		<mybatis-spring-boot-starter.version>4.1.0</mybatis-spring-boot-starter.version>
+		<mybatis-plus.version>3.5.17</mybatis-plus.version>
+		<velocity-engine-core.version>2.4.1</velocity-engine-core.version>
 		<mysql-connector.version>9.7.0</mysql-connector.version>
 		<logstash-logback.version>9.0</logstash-logback.version>
 		<spring-data-commons.version>4.1.1</spring-data-commons.version>
@@ -69,23 +67,16 @@
 
 	<dependencyManagement>
 		<dependencies>
-			<!--MyBatis分页插件starter-->
+			<!-- 统一管理版本，子模块引用时无需再写 version-->
 			<dependency>
-				<groupId>com.github.pagehelper</groupId>
-				<artifactId>pagehelper-spring-boot-starter</artifactId>
-				<version>${pagehelper-starter.version}</version>
+				<groupId>org.eu.liaohongdong.eShop</groupId>
+				<artifactId>eShop-common</artifactId>
+				<version>${project.version}</version>
 			</dependency>
-			<!--MyBatis的Starter依赖-->
 			<dependency>
-				<groupId>org.mybatis.spring.boot</groupId>
-				<artifactId>mybatis-spring-boot-starter</artifactId>
-				<version>${mybatis-spring-boot-starter.version}</version>
-			</dependency>
-			<!--MyBatis分页插件-->
-			<dependency>
-				<groupId>com.github.pagehelper</groupId>
-				<artifactId>pagehelper</artifactId>
-				<version>${pagehelper.version}</version>
+				<groupId>org.eu.liaohongdong.eShop</groupId>
+				<artifactId>eShop-mbg</artifactId>
+				<version>${project.version}</version>
 			</dependency>
 			<!--集成druid连接池-->
 			<dependency>
@@ -105,17 +96,29 @@
 				<artifactId>springdoc-openapi-starter-webmvc-ui</artifactId>
 				<version>${springdoc-openapi.version}</version>
 			</dependency>
-			<!-- MyBatis 生成器 -->
+			<!--MyBatis-Plus的Starter依赖-->
 			<dependency>
-				<groupId>org.mybatis.generator</groupId>
-				<artifactId>mybatis-generator-core</artifactId>
-				<version>${mybatis-generator.version}</version>
+				<groupId>com.baomidou</groupId>
+				<artifactId>mybatis-plus-spring-boot4-starter</artifactId>
+				<version>${mybatis-plus.version}</version>
 			</dependency>
-			<!-- MyBatis-->
+			<!-- MyBatis-Plus-->
 			<dependency>
-				<groupId>org.mybatis</groupId>
-				<artifactId>mybatis</artifactId>
-				<version>${mybatis.version}</version>
+				<groupId>com.baomidou</groupId>
+				<artifactId>mybatis-plus</artifactId>
+				<version>${mybatis-plus.version}</version>
+			</dependency>
+			<!-- MyBatis-Plus 代码生成器-->
+			<dependency>
+				<groupId>com.baomidou</groupId>
+				<artifactId>mybatis-plus-generator</artifactId>
+				<version>${mybatis-plus.version}</version>
+			</dependency>
+			<!-- 模板引擎 velocity，生成代码用 -->
+			<dependency>
+				<groupId>org.apache.velocity</groupId>
+				<artifactId>velocity-engine-core</artifactId>
+				<version>${velocity-engine-core.version}</version>
 			</dependency>
 			<!--Mysql数据库驱动-->
 			<dependency>

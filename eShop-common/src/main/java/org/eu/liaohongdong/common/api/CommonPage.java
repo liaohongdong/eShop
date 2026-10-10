@@ -1,6 +1,6 @@
 package org.eu.liaohongdong.common.api;
 
-import com.github.pagehelper.PageInfo;
+import com.baomidou.mybatisplus.core.metadata.IPage;
 import lombok.Data;
 import org.springframework.data.domain.Page;
 
@@ -20,22 +20,21 @@ public class CommonPage<T> {
 
     private List<?> list;
 
-    // 将PageHelper分页后的list转为分页信息
-    public static <T> CommonPage<T> restPage(List<T> list) {
+    // MyBatis-Plus IPage 转换方法
+    public static <T> CommonPage<T> restPage(IPage<T> pageInfo) {
         CommonPage<T> result = new CommonPage<T>();
-        PageInfo<T> pageInfo = new PageInfo<T>(list);
-        result.setPageNo(pageInfo.getPageNum()); // 默认从0开始
-        result.setPageSize(pageInfo.getPageSize());
-        result.setTotalPage(pageInfo.getPages());
+        result.setPageNo((int) pageInfo.getCurrent()); // MP current 从1开始
+        result.setPageSize((int) pageInfo.getSize());
+        result.setTotalPage((int) pageInfo.getPages());
         result.setTotal(pageInfo.getTotal());
-        result.setList(pageInfo.getList());
+        result.setList(pageInfo.getRecords());
         return result;
     }
 
     // 将SpringData分页后的list转为分页信息
     public static <T> CommonPage<T> restPage(Page<T> pageInfo) {
         CommonPage<T> result = new CommonPage<T>();
-        result.setPageNo(pageInfo.getNumber() + 1); // 默认从1开始
+        result.setPageNo(pageInfo.getNumber() + 1); // SpringData number从0，转成1开始
         result.setPageSize(pageInfo.getSize());
         result.setTotalPage(pageInfo.getTotalPages());
         result.setTotal(pageInfo.getTotalElements());
