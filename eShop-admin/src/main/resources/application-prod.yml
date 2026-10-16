@@ -1,0 +1,35 @@
+spring:
+  datasource:
+    url: ${DB_URL:jdbc:mysql://127.0.0.1:3306/eShop?useUnicode=true&characterEncoding=utf-8&serverTimezone=Asia/Shanghai&useSSL=false}
+    username: root
+    password: ${DB_PASSWORD:123456}
+    druid:
+      initial-size: 5 #连接池初始化大小
+      min-idle: 10 #最小空闲连接数
+      max-active: 20 #最大连接数
+      web-stat-filter:
+        exclusions: "*.js,*.gif,*.jpg,*.png,*.css,*.ico,/druid/*" #不统计这些请求数据
+      validation-query: SELECT 1 FROM DUAL
+      stat-view-servlet: #访问监控网页的登录用户名和密码
+        enabled: true
+        url-pattern: /druid/*
+        login-username: druid
+        login-password: druid
+      filter:
+        stat:
+          enabled: true
+          log-slow-sql: true
+  data:
+    redis:
+      host: ${REDIS_HOST:127.0.0.1} # Redis服务器地址
+      database: 0 # Redis数据库索引（默认为0）
+      port: ${REDIS_PORT:6379} # Redis服务器连接端口
+      password: ${REDIS_PASSWORD:redis123} # Redis服务器连接密码（默认为空）
+      timeout: 3000ms # 连接超时时间（毫秒）
+
+logging:
+  file:
+    path: /var/logs
+  level:
+    root: info
+    org.eu.liaohongdong: info

@@ -18,7 +18,9 @@
 	<modules>
 		<module>eShop-common</module>
 		<module>eShop-mpg</module>
-	</modules>
+		<module>eShop-security</module>
+        <module>eShop-admin</module>
+    </modules>
 
 	<properties>
 		<java.version>17</java.version>
@@ -75,7 +77,12 @@
 			</dependency>
 			<dependency>
 				<groupId>org.eu.liaohongdong.eShop</groupId>
-				<artifactId>eShop-mbg</artifactId>
+				<artifactId>eShop-mpg</artifactId>
+				<version>${project.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.eu.liaohongdong.eShop</groupId>
+				<artifactId>eShop-security</artifactId>
 				<version>${project.version}</version>
 			</dependency>
 			<!--集成druid连接池-->
@@ -112,6 +119,12 @@
 			<dependency>
 				<groupId>com.baomidou</groupId>
 				<artifactId>mybatis-plus-generator</artifactId>
+				<version>${mybatis-plus.version}</version>
+			</dependency>
+			<!-- 分页插件所在模块（MyBatis-Plus 3.5.9 起从 extension 拆出） -->
+			<dependency>
+				<groupId>com.baomidou</groupId>
+				<artifactId>mybatis-plus-jsqlparser</artifactId>
 				<version>${mybatis-plus.version}</version>
 			</dependency>
 			<!-- 模板引擎 velocity，生成代码用 -->
@@ -161,10 +174,6 @@
 
 	<build>
 		<plugins>
-			<plugin>
-				<groupId>org.springframework.boot</groupId>
-				<artifactId>spring-boot-maven-plugin</artifactId>
-			</plugin>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-compiler-plugin</artifactId>

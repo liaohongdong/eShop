@@ -1,0 +1,5 @@
+secure:
+  ignored:
+    urls:
+      - /auth/login
+      - /doc.html

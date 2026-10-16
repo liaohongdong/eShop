@@ -1,6 +1,8 @@
 package org.eu.liaohongdong.mpg;
 
+import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import org.eu.liaohongdong.mpg.entity.UmsAdmin;
 import org.eu.liaohongdong.mpg.mapper.UmsAdminMapper;
 import org.eu.liaohongdong.mpg.service.IUmsAdminService;
@@ -25,7 +27,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
  * 每个用例运行在同一个事务里（@Transactional），方法结束自动回滚，不污染库中现有数据。
  */
 @SpringBootTest(classes = TestApplication.class)
-//@Transactional // 开启事务就不会落库，用例结束时整体回滚
+@Transactional // 开启事务就不会落库，用例结束时整体回滚
 class UmsAdminTest {
 
     private static final String TAG = "it_" + UUID.randomUUID().toString().replace("-", "").substring(0, 12);
@@ -94,6 +96,34 @@ class UmsAdminTest {
                 Wrappers.<UmsAdmin>lambdaQuery().eq(UmsAdmin::getUsername, uname("filter-bob")));
         assertEquals(1, bob.size());
         assertEquals(uname("filter-bob"), bob.get(0).getUsername());
+    }
+
+    @Test
+    void selectPage_shouldPaginate() {
+        for (int i = 0; i < 5; i++) {
+            umsAdminMapper.insert(newAdmin("page-" + i));
+        }
+
+        IPage<UmsAdmin> page = umsAdminMapper.selectPage(
+                Page.of(1, 2),
+                Wrappers.<UmsAdmin>lambdaQuery()
+                        .likeRight(UmsAdmin::getUsername, TAG + "_page")
+                        .orderByAsc(UmsAdmin::getId));
+
+        assertEquals(5, page.getTotal(), "总记录数应为 5");
+        assertEquals(2, page.getSize(), "每页条数应为 2");
+        assertEquals(1, page.getCurrent(), "当前页应为第 1 页");
+        assertEquals(3, page.getPages(), "总页数应为 3");
+        assertEquals(2, page.getRecords().size(), "第 1 页应有 2 条");
+
+        IPage<UmsAdmin> page3 = umsAdminMapper.selectPage(
+                Page.of(3, 2),
+                Wrappers.<UmsAdmin>lambdaQuery()
+                        .likeRight(UmsAdmin::getUsername, TAG + "_page")
+                        .orderByAsc(UmsAdmin::getId));
+
+        assertEquals(1, page3.getRecords().size(), "第 3 页应为 1 条");
+        assertEquals(TAG + "_page-4", page3.getRecords().get(0).getUsername(), "末页应为最后一条");
     }
 
     @Test
